@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureWipe Professional - Enterprise Data Sanitization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛡️ SecureWipe Professional Login</h2>
+            </div>
+            <div class="modal-body">
+                <div class="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Administrator Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username" value="admin">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password" value="SecureWipe2025">
+                    </div>
+                    <div class="login-info">
+                        <p><strong>Demo Credentials:</strong></p>
+                        <p>Username: admin | Password: SecureWipe2025</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--primary btn--full-width" id="loginBtn">🚀 Login & Start Scanning</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safety Disclaimer Modal -->
+    <div id="disclaimerModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚠️ Enterprise Data Sanitization System</h2>
+            </div>
+            <div class="modal-body">
+                <div class="disclaimer">
+                    <h3>REAL DEVICE DETECTION SYSTEM</h3>
+                    <p>This application uses <strong>advanced browser APIs</strong> to detect real connected storage devices:</p>
+                    <ul>
+                        <li>✅ Web USB API - Physical USB device enumeration</li>
+                        <li>✅ File System Access API - Direct drive access</li>
+                        <li>✅ Storage API - Real storage metrics</li>
+                        <li>✅ Media Device API - Mobile & external device detection</li>
+                    </ul>
+                    <div class="warning-box">
+                        <h4>🛡️ SAFETY GUARANTEE</h4>
+                        <p><strong>All wipe operations are SAFE SIMULATIONS.</strong> The system demonstrates real device detection while ensuring no actual data destruction occurs. Perfect for investor demonstrations and compliance training.</p>
+                    </div>
+                    <div class="compliance-info">
+                        <h4>📋 Compliance Standards Supported</h4>
+                        <div class="compliance-badges">
+                            <span class="compliance-badge">NIST SP 800-88</span>
+                            <span class="compliance-badge">DoD 5220.22-M</span>
+                            <span class="compliance-badge">Gutmann 35-Pass</span>
+                            <span class="compliance-badge">HIPAA</span>
+                            <span class="compliance-badge">GDPR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--primary" id="acceptDisclaimer">🔍 Start Real Device Scanning</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🛡️ SecureWipe Professional</h1>
+                    <p class="header-subtitle">Enterprise Data Sanitization Platform</p>
+                </div>
+                <div class="header-right">
+                    <div class="status-panel">
+                        <span class="status status--success" id="systemStatus">ACTIVE</span>
+                        <span class="status status--info" id="modeStatus">REAL DEVICE SCANNER</span>
+                    </div>
+                    <div class="inspector-info">
+                        <span class="inspector-name">Inspector: Mani Verma</span>
+                        <span class="inspector-cert">CERT-MV-2025</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn--outline btn--sm" id="scanDevicesBtn">🔍 Scan Devices</button>
+                <button class="btn btn--secondary btn--sm" id="quickDemo">⚡ Quick Demo</button>
+                <button class="btn btn--outline btn--sm" id="emergencyStop" style="display:none">🛑 Emergency Stop</button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <button class="nav-btn active" data-view="dashboard">📊 Dashboard</button>
+            <button class="nav-btn" data-view="devices">💾 Device Discovery</button>
+            <button class="nav-btn" data-view="wipe">🔄 Secure Wipe</button>
+            <button class="nav-btn" data-view="progress">📈 Live Progress</button>
+            <button class="nav-btn" data-view="certificate">📄 Certificate Hub</button>
+            <button class="nav-btn" data-view="audit">📋 Audit Trail</button>
+        </nav>
+
+        <!-- Dashboard View -->
+        <section id="dashboardView" class="view active">
+            <div class="view-header">
+                <h2>Enterprise Dashboard</h2>
+                <div class="view-actions">
+                    <button class="btn btn--primary" id="startWorkflow">🚀 Start New Operation</button>
+                </div>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">💾</div>
+                    <div class="stat-info">
+                        <h3 id="devicesCount">0</h3>
+                        <p>Devices Detected</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <div class="stat-info">
+                        <h3 id="operationsCount">0</h3>
+                        <p>Operations Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📄</div>
+                    <div class="stat-info">
+                        <h3 id="certificatesCount">0</h3>
+                        <p>Certificates Issued</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="complianceScore">100%</h3>
+                        <p>Compliance Score</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-status-panel">
+                <h3>🔌 Browser API Status</h3>
+                <div class="api-status-grid">
+                    <div class="api-status-item" id="usbApiStatus">
+                        <span class="api-icon">🔌</span>
+                        <span class="api-name">Web USB API</span>
+                        <span class="api-badge checking">Checking...</span>
+                    </div>
+                    <div class="api-status-item" id="fsApiStatus">
+                        <span class="api-icon">📁</span>
+                        <span class="api-name">File System Access</span>
+                        <span class="api-badge checking">Checking...</span>
+                    </div>
+                    <div class="api-status-item" id="storageApiStatus">
+                        <span class="api-icon">💾</span>
+                        <span class="api-name">Storage API</span>
+                        <span class="api-badge checking">Checking...</span>
+                    </div>
+                    <div class="api-status-item" id="mediaApiStatus">
+                        <span class="api-icon">📱</span>
+                        <span class="api-name">Media Devices</span>
+                        <span class="api-badge checking">Checking...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div class="activity-log" id="recentActivity">
+                    <div class="activity-item">
+                        <span class="activity-icon">🚀</span>
+                        <span class="activity-message">System initialized successfully</span>
+                        <span class="activity-time">Just now</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Device Discovery View -->
+        <section id="devicesView" class="view">
+            <div class="view-header">
+                <h2>Real Storage Device Discovery</h2>
+                <div class="view-actions">
+                    <button class="btn btn--primary" id="scanRealDevices">🔍 Scan Connected Devices</button>
+                    <button class="btn btn--outline" id="selectDirectory">📁 Select Drive/Directory</button>
+                    <button class="btn btn--secondary" id="refreshDevices">🔄 Refresh</button>
+                </div>
+            </div>
+            
+            <div class="scan-status" id="scanStatus" style="display:none">
+                <div class="status-indicator">
+                    <div class="spinner"></div>
+                    <span>Scanning for real connected devices...</span>
+                </div>
+                <div class="scan-details" id="scanDetails">Initializing device discovery...</div>
+            </div>
+
+            <div class="device-grid" id="deviceGrid">
+                <!-- Real devices will be populated here -->
+            </div>
+
+            <div class="no-devices" id="noDevices" style="display:none">
+                <div class="placeholder-icon">🔍</div>
+                <h3>No Storage Devices Detected</h3>
+                <p>Connect storage devices and grant necessary permissions</p>
+                <div class="troubleshoot">
+                    <h4>Troubleshooting Tips:</h4>
+                    <ul>
+                        <li>Ensure HTTPS connection for full API access</li>
+                        <li>Grant USB and file system permissions when prompted</li>
+                        <li>Connect external USB drives, SD cards, or storage devices</li>
+                        <li>Use Chrome or Edge browser for best compatibility</li>
+                        <li>Try the "Select Drive/Directory" option for manual selection</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wipe Configuration View -->
+        <section id="wipeView" class="view">
+            <div class="view-header">
+                <button class="btn btn--outline btn--sm" id="backToDevices">← Back to Devices</button>
+                <h2>Secure Data Wipe Configuration</h2>
+            </div>
+
+            <div id="deviceDetail" class="device-detail">
+                <!-- Selected device details will appear here -->
+            </div>
+
+            <div class="wipe-config">
+                <h3>🛡️ Industry-Standard Wipe Protocols</h3>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label class="form-label">Sanitization Standard</label>
+                        <select class="form-control" id="wipeStandard">
+                            <option value="nist">NIST SP 800-88 Rev. 1 - Cryptographic Erase (1 pass)</option>
+                            <option value="dod">DoD 5220.22-M - Military Standard (3 passes)</option>
+                            <option value="gutmann">Gutmann 35-Pass - Maximum Security (35 passes)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Verification Level</label>
+                        <select class="form-control" id="verification">
+                            <option value="full">Full Verification (Recommended)</option>
+                            <option value="quick">Quick Verification</option>
+                            <option value="none">Skip Verification</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Operation Priority</label>
+                        <select class="form-control" id="priority">
+                            <option value="normal">Normal Priority</option>
+                            <option value="high">High Priority</option>
+                            <option value="low">Low Priority (Background)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="compliance-display">
+                    <h4>📋 Compliance Standards</h4>
+                    <div class="compliance-badges" id="complianceBadges">
+                        <!-- Will be populated based on selected standard -->
+                    </div>
+                    <div class="standard-details" id="standardDetails">
+                        <!-- Standard details will be shown here -->
+                    </div>
+                </div>
+
+                <div class="safety-confirmation">
+                    <h4>🔒 Safety Confirmation</h4>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="confirmSafety">
+                        <span class="checkmark"></span>
+                        I understand this is a SAFE SIMULATION demonstrating real device detection
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="confirmWipe">
+                        <span class="checkmark"></span>
+                        I confirm the selected device will undergo SIMULATED sanitization (no real data loss)
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="confirmCompliance">
+                        <span class="checkmark"></span>
+                        I acknowledge this demonstration meets industry compliance requirements
+                    </label>
+                </div>
+
+                <div class="wipe-actions">
+                    <button class="btn btn--primary btn--lg" id="startWipe" disabled>🚀 Start Secure Wipe Simulation</button>
+                    <button class="btn btn--outline" id="scheduleWipe">⏰ Schedule Operation</button>
+                    <button class="btn btn--secondary" id="preWipeReport">📋 Generate Pre-Wipe Report</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Monitoring View -->
+        <section id="progressView" class="view">
+            <div class="view-header">
+                <h2>🔄 Real-Time Wipe Progress</h2>
+                <div class="progress-controls">
+                    <span class="status" id="progressStatus">Ready</span>
+                </div>
+            </div>
+
+            <div class="progress-dashboard">
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <span class="stat-icon">🔄</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="currentPass">-</span>
+                            <span class="stat-label">Current Pass</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-icon">📊</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="totalPasses">-</span>
+                            <span class="stat-label">Total Passes</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-icon">⏱️</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="estimatedTime">-</span>
+                            <span class="stat-label">Time Remaining</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-icon">🚀</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="wipeSpeed">-</span>
+                            <span class="stat-label">Write Speed</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-icon">💾</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="dataProcessed">-</span>
+                            <span class="stat-label">Data Processed</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-icon">🌡️</span>
+                        <div class="stat-content">
+                            <span class="stat-value" id="deviceTemp">-</span>
+                            <span class="stat-label">Device Temperature</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-bar-section">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-percentage" id="progressPercentage">0%</div>
+                    </div>
+                    <div class="progress-info">
+                        <span class="current-operation" id="currentOperation">Waiting to start...</span>
+                    </div>
+                </div>
+
+                <div class="progress-log">
+                    <h4>📝 Live Operation Log</h4>
+                    <div class="log-content" id="logContent">
+                        <div class="log-entry info">
+                            <span class="log-timestamp">[READY]</span>
+                            <span class="log-message">System ready for secure wipe operation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certificate Hub View -->
+        <section id="certificateView" class="view">
+            <div class="view-header">
+                <h2>📄 Data Sanitization Certificate Hub</h2>
+                <div class="view-actions">
+                    <button class="btn btn--outline" id="viewAllCerts">📋 View All Certificates</button>
+                </div>
+            </div>
+
+            <div class="certificate-panel" id="certificatePanel">
+                <div class="certificate-placeholder">
+                    <div class="placeholder-icon">📄</div>
+                    <h3>No Certificate Generated Yet</h3>
+                    <p>Complete a secure wipe operation to generate a professional compliance certificate</p>
+                    <button class="btn btn--primary" id="goToWipe">🚀 Start Wipe Operation</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audit Trail View -->
+        <section id="auditView" class="view">
+            <div class="view-header">
+                <h2>📋 Audit Trail & Compliance Log</h2>
+                <div class="view-actions">
+                    <button class="btn btn--outline" id="exportAudit">📤 Export Log</button>
+                    <button class="btn btn--secondary" id="clearAudit">🗑️ Clear Log</button>
+                </div>
+            </div>
+
+            <div class="audit-dashboard">
+                <div class="audit-stats">
+                    <div class="audit-stat">
+                        <h3 id="totalOperations">0</h3>
+                        <p>Total Operations</p>
+                    </div>
+                    <div class="audit-stat">
+                        <h3 id="devicesProcessed">0</h3>
+                        <p>Devices Processed</p>
+                    </div>
+                    <div class="audit-stat">
+                        <h3 id="certificatesIssued">0</h3>
+                        <p>Certificates Issued</p>
+                    </div>
+                    <div class="audit-stat">
+                        <h3 id="complianceRate">100%</h3>
+                        <p>Compliance Rate</p>
+                    </div>
+                </div>
+                
+                <div class="audit-log-panel">
+                    <h4>🔍 System Events</h4>
+                    <div class="audit-log-content" id="auditLogContent">
+                        <!-- Audit entries will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
